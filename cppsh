@@ -1,0 +1,19 @@
+#!/bin/bash
+
+SCRIPT="$1"
+TEMP="/tmp/$1"
+BIN="/tmp/${1%.cpp}.bin"
+
+
+# remove interpreter
+tail -n +2 "$SCRIPT" > "$TEMP"
+
+# compile
+g++ -std=c++11 "$TEMP" -o "$BIN"
+
+#execute
+"$BIN"
+
+
+
+
