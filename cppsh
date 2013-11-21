@@ -4,15 +4,21 @@ SCRIPT="$1"
 TEMP="/tmp/$1"
 BIN="/tmp/${1%.cpp}.bin"
 
+# cleanup
+if [ -f "$BIN" ]; then
+    rm "$BIN"
+fi
 
-# remove interpreter
+# remove interpreter header
 tail -n +2 "$SCRIPT" > "$TEMP"
 
 # compile
 g++ -std=c++11 "$TEMP" -o "$BIN"
 
 #execute
-"$BIN"
+if [ -f "$BIN" ]; then
+    "$BIN"
+fi
 
 
 
