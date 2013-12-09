@@ -1,6 +1,7 @@
 #!/usr/bin/env cppsh
 
 #include <iostream>
+#include <initializer_list>
 
 int main() {
     std::cout << "hello" << std::endl;

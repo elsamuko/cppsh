@@ -34,16 +34,16 @@ tail -n +2 "$SCRIPT" >> "$TEMP"
 
 
 # compile
-case $(uname -o) in
-	GNU/Linux)
+case $(uname) in
+	Linux)
 		g++ -std=c++11 "$TEMP" -o "$BIN" > "$LOG"
 		;;
 	Darwin)
-		clang++ -std=c++11 "$TEMP" -o "$BIN" > "$LOG"
+		clang++ -std=c++11 -stdlib=libc++ "$TEMP" -o "$BIN" > "$LOG"
 		;;
-	Cygwin)
-                WTEMP=$(cygpath -w "$TEMP")
-                WBIN=$(cygpath -w "$BIN")
+	CYGWIN*)
+		WTEMP=$(cygpath -w "$TEMP")
+		WBIN=$(cygpath -w "$BIN")
 		create_helper
 		"$HELPER" "$WTEMP" /Fe"$WBIN" 2> /dev/null 1> "$LOG"
  		;;
