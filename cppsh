@@ -7,17 +7,14 @@ HELPER="/tmp/compile.bat"
 LOG="/tmp/error.log"
 
 function create_helper {
-	if [ -f "$HELPER" ]; then
-		rm "$HELPER"
-	fi
-	echo -e "@echo off\r\ncall vcvars32.bat\r\ncl /EHsc %*" > "$HELPER"
-	chmod +x "$HELPER"
+    echo -e "@echo off\r\ncall vcvars32.bat\r\ncl /EHsc %*" > "$HELPER"
+    chmod +x "$HELPER"
 }
 
 function please_remove {
-	if [ -f "$1" ]; then
-		rm "$1"
-	fi
+    if [ -f "$1" ]; then
+        rm "$1"
+    fi
 }
 
 
@@ -35,21 +32,21 @@ tail -n +2 "$SCRIPT" >> "$TEMP"
 
 # compile
 case $(uname) in
-	Linux)
-		g++ -std=c++11 "$TEMP" -o "$BIN" > "$LOG"
-		;;
-	Darwin)
-		clang++ -std=c++11 -stdlib=libc++ "$TEMP" -o "$BIN" > "$LOG"
-		;;
-	CYGWIN*)
-		WTEMP=$(cygpath -w "$TEMP")
-		WBIN=$(cygpath -w "$BIN")
-		create_helper
-		"$HELPER" "$WTEMP" /Fe"$WBIN" 2> /dev/null 1> "$LOG"
- 		;;
-	*)
-		echo "Error: Unknown OS"
-		;;
+    Linux)
+        g++ -std=c++11 "$TEMP" -o "$BIN" > "$LOG"
+        ;;
+    Darwin)
+        clang++ -std=c++11 -stdlib=libc++ "$TEMP" -o "$BIN" > "$LOG"
+        ;;
+    CYGWIN*)
+        WTEMP=$(cygpath -w "$TEMP")
+        WBIN=$(cygpath -w "$BIN")
+        create_helper
+        "$HELPER" "$WTEMP" /Fe"$WBIN" 2> /dev/null 1> "$LOG"
+         ;;
+    *)
+        echo "Error: Unknown OS"
+        ;;
 esac
 
 
