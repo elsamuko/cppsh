@@ -3,8 +3,6 @@
 SCRIPT="$1"
 TEMP="/tmp/$1"
 BIN="/tmp/${1%.cpp}.exe"
-WTEMP=$(cygpath -w "$TEMP")
-WBIN=$(cygpath -w "$BIN")
 HELPER="/tmp/compile.bat"
 LOG="/tmp/error.log"
 
@@ -22,25 +20,30 @@ function please_remove {
 	fi
 }
 
+
 # cleanup
 please_remove "$BIN"
 please_remove "$TEMP"
 please_remove "$HELPER"
 please_remove "$LOG"
 
+
 # remove interpreter header
 echo "// auto-generated" > "$TEMP"
 tail -n +2 "$SCRIPT" >> "$TEMP"
 
+
 # compile
 case $(uname -o) in
-	Linux)
+	GNU/Linux)
 		g++ -std=c++11 "$TEMP" -o "$BIN" > "$LOG"
 		;;
 	Darwin)
 		clang++ -std=c++11 "$TEMP" -o "$BIN" > "$LOG"
 		;;
 	Cygwin)
+                WTEMP=$(cygpath -w "$TEMP")
+                WBIN=$(cygpath -w "$BIN")
 		create_helper
 		"$HELPER" "$WTEMP" /Fe"$WBIN" 2> /dev/null 1> "$LOG"
  		;;
@@ -54,7 +57,7 @@ esac
 if [ -f "$BIN" ]; then
     "$BIN"
 else
-	cat "$LOG"
+    cat "$LOG"
 fi
 
 
