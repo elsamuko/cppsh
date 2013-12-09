@@ -2,22 +2,59 @@
 
 SCRIPT="$1"
 TEMP="/tmp/$1"
-BIN="/tmp/${1%.cpp}.bin"
+BIN="/tmp/${1%.cpp}.exe"
+WTEMP=$(cygpath -w "$TEMP")
+WBIN=$(cygpath -w "$BIN")
+HELPER="/tmp/compile.bat"
+LOG="/tmp/error.log"
+
+function create_helper {
+	if [ -f "$HELPER" ]; then
+		rm "$HELPER"
+	fi
+	echo -e "@echo off\r\ncall vcvars32.bat\r\ncl /EHsc %*" > "$HELPER"
+	chmod +x "$HELPER"
+}
+
+function please_remove {
+	if [ -f "$1" ]; then
+		rm "$1"
+	fi
+}
 
 # cleanup
-if [ -f "$BIN" ]; then
-    rm "$BIN"
-fi
+please_remove "$BIN"
+please_remove "$TEMP"
+please_remove "$HELPER"
+please_remove "$LOG"
 
 # remove interpreter header
-tail -n +2 "$SCRIPT" > "$TEMP"
+echo "// auto-generated" > "$TEMP"
+tail -n +2 "$SCRIPT" >> "$TEMP"
 
 # compile
-g++ -std=c++11 "$TEMP" -o "$BIN"
+case $(uname -o) in
+	Linux)
+		g++ -std=c++11 "$TEMP" -o "$BIN" > "$LOG"
+		;;
+	Darwin)
+		clang++ -std=c++11 "$TEMP" -o "$BIN" > "$LOG"
+		;;
+	Cygwin)
+		create_helper
+		"$HELPER" "$WTEMP" /Fe"$WBIN" 2> /dev/null 1> "$LOG"
+ 		;;
+	*)
+		echo "Error: Unknown OS"
+		;;
+esac
+
 
 #execute
 if [ -f "$BIN" ]; then
     "$BIN"
+else
+	cat "$LOG"
 fi
 
 
