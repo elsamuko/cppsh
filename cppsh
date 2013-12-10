@@ -1,5 +1,11 @@
 #!/bin/bash
 
+if [ $# -lt 1 ]
+then
+  echo "Use $0 as interpreter only."
+  exit 1
+fi
+
 SCRIPT="$1"
 TEMP="/tmp/$1"
 BIN="/tmp/${1%.cpp}.exe"
@@ -45,14 +51,15 @@ case $(uname) in
         "$HELPER" "$WTEMP" /Fe"$WBIN" 2> /dev/null 1> "$LOG"
          ;;
     *)
-        echo "Error: Unknown OS"
+        echo "Error: Unknown OS."
         ;;
 esac
 
 
 #execute
 if [ -f "$BIN" ]; then
-    "$BIN"
+    shift # removes first argument
+    "$BIN" "$@"
 else
     cat "$LOG"
 fi
