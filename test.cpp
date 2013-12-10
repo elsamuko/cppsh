@@ -5,7 +5,12 @@
 #include <initializer_list>
 #endif
 
-int main() {
+int main( int argc, char* argv[] ) {
+    
+    for( int i = 0; i < argc; ++i ) {
+        std::cout << i << ". arg: " << argv[i] << std::endl;
+    }
+    
     std::cout << "hello" << std::endl;
     
 #ifndef _WIN32
