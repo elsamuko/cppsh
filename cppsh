@@ -6,9 +6,9 @@ then
   exit 1
 fi
 
-SCRIPT="$1"
-TEMP="/tmp/$1"
-BIN="/tmp/${1%.cpp}.exe"
+BASE=$(basename "$1")
+TEMP="/tmp/$BASE"
+BIN="/tmp/${BASE%.cpp}.exe"
 HELPER="/tmp/compile.bat"
 LOG="/tmp/error.log"
 
@@ -33,7 +33,7 @@ please_remove "$LOG"
 
 # remove interpreter header
 echo "// auto-generated" > "$TEMP"
-tail -n +2 "$SCRIPT" >> "$TEMP"
+tail -n +2 "$1" >> "$TEMP"
 
 
 # compile
