@@ -32,8 +32,15 @@ please_remove "$LOG"
 
 
 # remove interpreter header
-echo "// auto-generated" > "$TEMP"
-tail -n +2 "$1" >> "$TEMP"
+case $(head -n 1 "$1" | xargs) in
+    \#!*)
+        echo "// auto-generated" > "$TEMP"
+        tail -n +2 "$1" >> "$TEMP"
+        ;;
+    *)
+        cp "$1" "$TEMP"
+        ;;
+esac        
 
 
 # compile
