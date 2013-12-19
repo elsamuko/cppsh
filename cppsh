@@ -7,6 +7,7 @@ then
 fi
 
 BASE=$(basename "$1")
+DIR=$(dirname "$1")
 TEMP="/tmp/$BASE"
 BIN="/tmp/${BASE%.cpp}.exe"
 HELPER="/tmp/compile.bat"
@@ -46,16 +47,16 @@ esac
 # compile
 case $(uname) in
     Linux)
-        g++ -std=c++11 "$TEMP" -o "$BIN" > "$LOG"
+        g++ -I"$DIR" -std=c++11 "$TEMP" -o "$BIN" > "$LOG"
         ;;
     Darwin)
-        clang++ -std=c++11 -stdlib=libc++ "$TEMP" -o "$BIN" > "$LOG"
+        clang++ -I"$DIR" -std=c++11 -stdlib=libc++ "$TEMP" -o "$BIN" > "$LOG"
         ;;
     CYGWIN*)
         WTEMP=$(cygpath -w "$TEMP")
         WBIN=$(cygpath -w "$BIN")
         create_helper
-        "$HELPER" "$WTEMP" /Fe"$WBIN" 2> /dev/null 1> "$LOG"
+        "$HELPER" /I "$DIR" "$WTEMP" /Fe"$WBIN" 2> /dev/null 1> "$LOG"
          ;;
     *)
         echo "Error: Unknown OS."
