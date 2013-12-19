@@ -5,13 +5,16 @@
 #include <initializer_list>
 #endif
 
+#include "foo/bar.h"
+
 int main( int argc, char* argv[] ) {
     
     for( int i = 0; i < argc; ++i ) {
         std::cout << i << ". arg: " << argv[i] << std::endl;
     }
     
-    std::cout << "hello" << std::endl;
+    // from bar.h
+    some::func();
     
 #ifndef _WIN32
     for( auto i : { 1,2,3,4 } ) {
