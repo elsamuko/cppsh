@@ -8,10 +8,12 @@ fi
 
 BASE=$(basename "$1")
 DIR=$(dirname "$1")
-TEMP="/tmp/$BASE"
-BIN="/tmp/${BASE%.cpp}.exe"
-HELPER="/tmp/compile.bat"
-LOG="/tmp/error.log"
+
+TEMP_DIR="/tmp/cppsh"
+TEMP_CPP="$TEMP_DIR/$BASE"
+BIN="$TEMP_DIR/${BASE%.cpp}.exe"
+HELPER="$TEMP_DIR/compile.bat"
+LOG="$TEMP_DIR/error.log"
 
 function create_helper {
     echo -e '@echo off\r\ncall "%VS110COMNTOOLS%..\\..\\VC\\bin\\vcvars32.bat"\r\ncl /EHsc %*' > "$HELPER"
@@ -24,45 +26,49 @@ function please_remove {
     fi
 }
 
+# prepare
+mkdir -p $TEMP_DIR
 
 # cleanup
-please_remove "$BIN"
-please_remove "$TEMP"
+please_remove "$TEMP_CPP"
 please_remove "$HELPER"
 please_remove "$LOG"
-
 
 # remove interpreter header
 case $(head -n 1 "$1" | xargs) in
     \#!*)
-        echo "// auto-generated" > "$TEMP"
-        tail -n +2 "$1" >> "$TEMP"
+        echo "// auto-generated" > "$TEMP_CPP"
+        tail -n +2 "$1" >> "$TEMP_CPP"
         ;;
     *)
-        cp "$1" "$TEMP"
-        ;;
-esac        
-
-
-# compile
-case $(uname) in
-    Linux)
-        g++ -I"$DIR" -std=c++11 "$TEMP" -o "$BIN" > "$LOG"
-        ;;
-    Darwin)
-        clang++ -I"$DIR" -std=c++11 -stdlib=libc++ "$TEMP" -o "$BIN" > "$LOG"
-        ;;
-    CYGWIN*)
-        WTEMP=$(cygpath -w "$TEMP")
-        WBIN=$(cygpath -w "$BIN")
-        create_helper
-        "$HELPER" /I "$DIR" "$WTEMP" /Fe"$WBIN" 2> /dev/null 1> "$LOG"
-         ;;
-    *)
-        echo "Error: Unknown OS."
+        cp "$1" "$TEMP_CPP"
         ;;
 esac
 
+# get md5 sum of source file
+MD5SUM=$(md5sum "$TEMP_CPP" | cut -d ' ' -f 1)
+BIN="$TEMP_DIR/$MD5SUM.exe"
+
+# compile, if not already compiled
+if [ ! -f "$BIN" ]; then
+    case $(uname) in
+        Linux)
+            g++ -I"$DIR" -std=c++11 "$TEMP_CPP" -o "$BIN" > "$LOG"
+            ;;
+        Darwin)
+            clang++ -I"$DIR" -std=c++11 -stdlib=libc++ "$TEMP_CPP" -o "$BIN" > "$LOG"
+            ;;
+        CYGWIN*)
+            WTEMP_CPP=$(cygpath -w "$TEMP_CPP")
+            WBIN=$(cygpath -w "$BIN")
+            create_helper
+            "$HELPER" /I "$DIR" "$WTEMP_CPP" /Fe"$WBIN" 2> /dev/null 1> "$LOG"
+            ;;
+        *)
+            echo "Error: Unknown OS."
+            ;;
+    esac
+fi
 
 #execute
 if [ -f "$BIN" ]; then
