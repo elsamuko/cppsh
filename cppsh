@@ -46,7 +46,14 @@ case $(head -n 1 "$1" | xargs) in
 esac
 
 # get md5 sum of source file
-MD5SUM=$(md5sum "$TEMP_CPP" | cut -d ' ' -f 1)
+case $(uname) in
+    Darwin)
+        MD5SUM=$(md5 "$TEMP_CPP" | cut -d ' ' -f 4)
+        ;;
+    *)
+        MD5SUM=$(md5sum "$TEMP_CPP" | cut -d ' ' -f 1)
+        ;;
+esac
 BIN="$TEMP_DIR/$MD5SUM.exe"
 
 # compile, if not already compiled
