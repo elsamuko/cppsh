@@ -63,7 +63,7 @@ if [ ! -f "$BIN" ]; then
             g++ -I"$DIR" -std=c++11 "$TEMP_CPP" -o "$BIN" > "$LOG"
             ;;
         Darwin)
-            clang++ -I"$DIR" -std=c++11 -stdlib=libc++ "$TEMP_CPP" -o "$BIN" > "$LOG"
+            clang++ -I"$DIR" -std=c++1y -stdlib=libc++ "$TEMP_CPP" -o "$BIN" > "$LOG"
             ;;
         CYGWIN*)
             WTEMP_DIR=$(cygpath -w "$TEMP_DIR")
