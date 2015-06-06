@@ -60,7 +60,7 @@ BIN="$TEMP_DIR/$MD5SUM.exe"
 if [ ! -f "$BIN" ]; then
     case $(uname) in
         Linux)
-            g++ -I"$DIR" -std=c++11 "$TEMP_CPP" -o "$BIN" > "$LOG"
+            g++ -I"$DIR" -pthread -std=c++11 "$TEMP_CPP" -o "$BIN" > "$LOG"
             ;;
         Darwin)
             clang++ -I"$DIR" -std=c++1y -stdlib=libc++ "$TEMP_CPP" -o "$BIN" > "$LOG"
