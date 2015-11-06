@@ -70,7 +70,7 @@ if [ ! -f "$BIN" ]; then
             WTEMP_CPP=$(cygpath -w "$TEMP_CPP")
             WBIN=$(cygpath -w "$BIN")
             create_helper
-            "$HELPER" /I "$DIR" "$WTEMP_CPP" /Fo"$WTEMP_DIR\\" /Fe"$WBIN" 2> /dev/null 1> "$LOG"
+             "$HELPER" /I "$DIR" "$WTEMP_CPP" /Fo"$WTEMP_DIR\\" /Fe"$WBIN" /D "_UNICODE" /D "UNICODE" 2> /dev/null 1> "$LOG"
             ;;
         *)
             echo "Error: Unknown OS."
