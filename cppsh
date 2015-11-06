@@ -16,7 +16,16 @@ HELPER="$TEMP_DIR/compile.bat"
 LOG="$TEMP_DIR/error.log"
 
 function create_helper {
-    echo -e '@echo off\r\ncall "%VS110COMNTOOLS%..\\..\\VC\\bin\\vcvars32.bat"\r\ncl /EHsc %*' > "$HELPER"
+	# VS 2015
+	if [ -n "$VS140COMNTOOLS" ]; then
+		echo -e '@echo off\r\ncall "%VS140COMNTOOLS%..\\..\\VC\\bin\\vcvars32.bat"\r\ncl /EHsc %*' > "$HELPER"
+	# VS 2013
+	elif [ -n "$VS120COMNTOOLS" ]; then
+		echo -e '@echo off\r\ncall "%VS120COMNTOOLS%..\\..\\VC\\bin\\vcvars32.bat"\r\ncl /EHsc %*' > "$HELPER"
+	# VS 2012
+	elif [ -n "$VS110COMNTOOLS" ]; then
+		echo -e '@echo off\r\ncall "%VS110COMNTOOLS%..\\..\\VC\\bin\\vcvars32.bat"\r\ncl /EHsc %*' > "$HELPER"
+	fi
     chmod +x "$HELPER"
 }
 
