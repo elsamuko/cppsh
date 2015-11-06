@@ -1,9 +1,16 @@
 #!/usr/bin/env cppsh
 
+#if defined(_WIN32) && (_MSC_VER >= 1800) // VS 2013 and later
+#define HAS_INITIALIZER_LISTS
+#elif !defined(_WIN32) // clang++ and g++
+#define HAS_INITIALIZER_LISTS
+#endif
+
 #include <iostream>
-#ifndef _WIN32
+#ifdef HAS_INITIALIZER_LISTS
 #include <initializer_list>
 #endif
+
 
 #include "foo/bar.h"
 
@@ -16,7 +23,7 @@ int main( int argc, char* argv[] ) {
     // from bar.h
     some::func();
     
-#ifndef _WIN32
+#ifdef HAS_INITIALIZER_LISTS
     for( auto i : { 1,2,3,4 } ) {
         std::cout << i << std::endl;
     }
