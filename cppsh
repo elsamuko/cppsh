@@ -45,7 +45,7 @@ please_remove "$LOG"
 
 # remove interpreter header
 case $(head -n 1 "$1" | xargs) in
-    \#!*)
+    '#!'*)
         echo "// auto-generated" > "$TEMP_CPP"
         tail -n +2 "$1" >> "$TEMP_CPP"
         ;;
