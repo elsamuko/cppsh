@@ -6,8 +6,9 @@ then
   exit 1
 fi
 
-BASE=$(basename "$1")
-DIR=$(dirname "$1")
+ORIG="$1"
+BASE=$(basename "$ORIG")
+DIR=$(dirname "$ORIG")
 
 TEMP_DIR="/tmp/cppsh"
 TEMP_CPP="$TEMP_DIR/$BASE"
@@ -44,13 +45,13 @@ please_remove "$HELPER"
 please_remove "$LOG"
 
 # remove interpreter header
-case $(head -n 1 "$1" | xargs) in
+case $(head -n 1 "$ORIG" | xargs) in
     '#!'*)
         echo "// auto-generated" > "$TEMP_CPP"
-        tail -n +2 "$1" >> "$TEMP_CPP"
+        tail -n +2 "$ORIG" >> "$TEMP_CPP"
         ;;
     *)
-        cp "$1" "$TEMP_CPP"
+        cp "$ORIG" "$TEMP_CPP"
         ;;
 esac
 
@@ -90,7 +91,7 @@ fi
 #execute
 if [ -f "$BIN" ]; then
     shift # removes first argument
-    "$BIN" "$@"
+    exec -a "$ORIG" "$BIN" "$@"
 else
     cat "$LOG"
 fi
