@@ -1,7 +1,6 @@
 #!/usr/bin/env bash
 
-if [ $# -lt 1 ]
-then
+if [ $# -lt 1 ]; then
   echo "Use $0 as interpreter only."
   exit 1
 fi
@@ -16,7 +15,7 @@ BIN="$TEMP_DIR/${BASE%.cpp}.exe"
 HELPER="$TEMP_DIR/compile.bat"
 LOG="$TEMP_DIR/error.log"
 
-function create_helper {
+function createHelper {
 	# VS 2015
 	if [ -n "$VS140COMNTOOLS" ]; then
 		echo -e '@echo off\r\ncall "%VS140COMNTOOLS%..\\..\\VC\\bin\\vcvars32.bat"\r\ncl /EHsc %*' > "$HELPER"
@@ -30,72 +29,80 @@ function create_helper {
     chmod +x "$HELPER"
 }
 
-function please_remove {
+function pleaseRemove {
     if [ -f "$1" ]; then
         rm "$1"
     fi
 }
 
-# prepare
-mkdir -p $TEMP_DIR
+function doPrepare {
+    mkdir -p $TEMP_DIR
+    pleaseRemove "$TEMP_CPP"
+    pleaseRemove "$HELPER"
+    pleaseRemove "$LOG"
+}
 
-# cleanup
-please_remove "$TEMP_CPP"
-please_remove "$HELPER"
-please_remove "$LOG"
-
-# remove interpreter header
-case $(head -n 1 "$ORIG" | xargs) in
-    '#!'*)
-        echo "// auto-generated" > "$TEMP_CPP"
-        tail -n +2 "$ORIG" >> "$TEMP_CPP"
-        ;;
-    *)
-        cp "$ORIG" "$TEMP_CPP"
-        ;;
-esac
-
-# get md5 sum of source file
-case $(uname) in
-    Darwin)
-        MD5SUM=$(md5 "$TEMP_CPP" | cut -d ' ' -f 4)
-        ;;
-    *)
-        MD5SUM=$(md5sum "$TEMP_CPP" | cut -d ' ' -f 1)
-        ;;
-esac
-BIN="$TEMP_DIR/$MD5SUM.exe"
-
-# compile, if not already compiled
-if [ ! -f "$BIN" ]; then
-    case $(uname) in
-        Linux)
-            g++ -I"$DIR" -pthread -std=c++11 "$TEMP_CPP" -o "$BIN" > "$LOG"
-            ;;
-        Darwin)
-            clang++ -I"$DIR" -std=c++1y -stdlib=libc++ "$TEMP_CPP" -o "$BIN" > "$LOG"
-            ;;
-        CYGWIN*)
-            WTEMP_DIR=$(cygpath -w "$TEMP_DIR")
-            WTEMP_CPP=$(cygpath -w "$TEMP_CPP")
-            WBIN=$(cygpath -w "$BIN")
-            create_helper
-             "$HELPER" /I "$DIR" "$WTEMP_CPP" /Fo"$WTEMP_DIR\\" /Fe"$WBIN" /D "_UNICODE" /D "UNICODE" 2> /dev/null 1> "$LOG"
+function removeHeader {
+    case $(head -n 1 "$ORIG" | xargs) in
+        '#!'*)
+            echo "// auto-generated" > "$TEMP_CPP"
+            tail -n +2 "$ORIG" >> "$TEMP_CPP"
             ;;
         *)
-            echo "Error: Unknown OS."
+            cp "$ORIG" "$TEMP_CPP"
             ;;
     esac
-fi
+}
 
-#execute
-if [ -f "$BIN" ]; then
-    shift # removes first argument
-    exec -a "$ORIG" "$BIN" "$@"
-else
-    cat "$LOG"
-fi
+function calcHash {
+    case $(uname) in
+        Darwin)
+            MD5SUM=$(md5 "$TEMP_CPP" | cut -d ' ' -f 4)
+            ;;
+        *)
+            MD5SUM=$(md5sum "$TEMP_CPP" | cut -d ' ' -f 1)
+            ;;
+    esac
+    BIN="$TEMP_DIR/$MD5SUM.exe"
+}
+
+function doCompile {
+    # compile, if not already compiled
+    if [ ! -f "$BIN" ]; then
+        case $(uname) in
+            Linux)
+                g++ -I"$DIR" -pthread -std=c++11 "$TEMP_CPP" -o "$BIN" > "$LOG"
+                ;;
+            Darwin)
+                clang++ -I"$DIR" -std=c++1y -stdlib=libc++ "$TEMP_CPP" -o "$BIN" > "$LOG"
+                ;;
+            CYGWIN*)
+                WTEMP_DIR=$(cygpath -w "$TEMP_DIR")
+                WTEMP_CPP=$(cygpath -w "$TEMP_CPP")
+                WBIN=$(cygpath -w "$BIN")
+                createHelper
+                "$HELPER" /I "$DIR" "$WTEMP_CPP" /Fo"$WTEMP_DIR\\" /Fe"$WBIN" /D "_UNICODE" /D "UNICODE" 2> /dev/null 1> "$LOG"
+                ;;
+            *)
+                echo "Error: Unknown OS."
+                ;;
+        esac
+    fi
+}
+
+function doExecute {
+    if [ -f "$BIN" ]; then
+        shift # removes first argument
+        exec -a "$ORIG" "$BIN" "$@"
+    else
+        cat "$LOG"
+    fi
+}
 
 
-
-
+# main
+doPrepare
+removeHeader
+calcHash
+doCompile
+doExecute "$@"
