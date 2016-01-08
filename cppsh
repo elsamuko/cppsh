@@ -78,6 +78,7 @@ function doCompile {
     if [ ! -f "$BIN" ]; then
 
         getFlags
+        cd "$DIR"
 
         case $(uname) in
             Linux)
