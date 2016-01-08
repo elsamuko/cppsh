@@ -66,15 +66,25 @@ function calcHash {
     BIN="$TEMP_DIR/$MD5SUM.exe"
 }
 
+function getFlags {
+    CPPFLAGS=$(grep -Po '(?<=cppsh::CPPFLAGS).*' < "$TEMP_CPP")
+    CXXFLAGS=$(grep -Po '(?<=cppsh::CXXFLAGS).*' < "$TEMP_CPP")
+     LDFLAGS=$(grep -Po '(?<=cppsh::LDFLAGS).*'  < "$TEMP_CPP")
+        LIBS=$(grep -Po '(?<=cppsh::LIBS).*'     < "$TEMP_CPP")
+}
+
 function doCompile {
     # compile, if not already compiled
     if [ ! -f "$BIN" ]; then
+
+        getFlags
+
         case $(uname) in
             Linux)
-                g++ -I"$DIR" -pthread -std=c++11 "$TEMP_CPP" -o "$BIN" > "$LOG"
+                g++ -I"$DIR" $CPPFLAGS -std=c++11 $CXXFLAGS "$TEMP_CPP" -o "$BIN" $LDFLAGS -pthread $LIBS > "$LOG"
                 ;;
             Darwin)
-                clang++ -I"$DIR" -std=c++1y -stdlib=libc++ "$TEMP_CPP" -o "$BIN" > "$LOG"
+                clang++ -I"$DIR" $CPPFLAGS -std=c++1y -stdlib=libc++ $CXXFLAGS "$TEMP_CPP" -o "$BIN" $LDFLAGS $LIBS > "$LOG"
                 ;;
             CYGWIN*)
                 WTEMP_DIR=$(cygpath -w "$TEMP_DIR")
