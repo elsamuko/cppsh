@@ -91,7 +91,7 @@ function doCompile {
                 WTEMP_CPP=$(cygpath -w "$TEMP_CPP")
                 WBIN=$(cygpath -w "$BIN")
                 createHelper
-                "$HELPER" /I "$DIR" "$WTEMP_CPP" /Fo"$WTEMP_DIR\\" /Fe"$WBIN" /D "_UNICODE" /D "UNICODE" 2> /dev/null 1> "$LOG"
+                "$HELPER" /D"_UNICODE" /D"UNICODE" /I"$DIR" $CPPFLAGS $CXXFLAGS "$WTEMP_CPP" /Fo"$WTEMP_DIR\\" /Fe"$WBIN" $LDFLAGS $LIBS 2> /dev/null 1> "$LOG"
                 ;;
             *)
                 echo "Error: Unknown OS."
