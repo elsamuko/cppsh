@@ -82,7 +82,7 @@ function doCompile {
 
         case $(uname) in
             Linux)
-                g++ -I"$DIR" $CPPFLAGS -std=c++11 $CXXFLAGS "$TEMP_CPP" -o "$BIN" $LDFLAGS -pthread $LIBS > "$LOG"
+                g++ -I"$DIR" $CPPFLAGS -std=c++1z $CXXFLAGS "$TEMP_CPP" -o "$BIN" $LDFLAGS -pthread $LIBS -lstdc++fs> "$LOG"
                 ;;
             Darwin)
                 clang++ -I"$DIR" $CPPFLAGS -std=c++1y -stdlib=libc++ $CXXFLAGS "$TEMP_CPP" -o "$BIN" $LDFLAGS $LIBS > "$LOG"
