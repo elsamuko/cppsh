@@ -1,8 +1,8 @@
 #!/usr/bin/env bash
 
 if [ $# -lt 1 ]; then
-  echo "Use $0 as interpreter only."
-  exit 1
+    echo "Use $0 as interpreter only."
+    exit 1
 fi
 
 ORIG="$1"
@@ -16,16 +16,16 @@ HELPER="$TEMP_DIR/compile.bat"
 LOG="$TEMP_DIR/error.log"
 
 function createHelper {
-	# VS 2015
-	if [ -n "$VS140COMNTOOLS" ]; then
-		echo -e '@echo off\r\ncall "%VS140COMNTOOLS%..\\..\\VC\\bin\\amd64\\vcvars64.bat"\r\ncl /EHsc %*' > "$HELPER"
-	# VS 2013
-	elif [ -n "$VS120COMNTOOLS" ]; then
-		echo -e '@echo off\r\ncall "%VS120COMNTOOLS%..\\..\\VC\\bin\\amd64\\vcvars64.bat"\r\ncl /EHsc %*' > "$HELPER"
-	# VS 2012
-	elif [ -n "$VS110COMNTOOLS" ]; then
-		echo -e '@echo off\r\ncall "%VS110COMNTOOLS%..\\..\\VC\\bin\\amd64\\vcvars64.bat"\r\ncl /EHsc %*' > "$HELPER"
-	fi
+    # VS 2015
+    if [ -n "$VS140COMNTOOLS" ]; then
+        echo -e '@echo off\r\ncall "%VS140COMNTOOLS%..\\..\\VC\\bin\\amd64\\vcvars64.bat"\r\ncl /EHsc %*' > "$HELPER"
+    # VS 2013
+    elif [ -n "$VS120COMNTOOLS" ]; then
+        echo -e '@echo off\r\ncall "%VS120COMNTOOLS%..\\..\\VC\\bin\\amd64\\vcvars64.bat"\r\ncl /EHsc %*' > "$HELPER"
+    # VS 2012
+    elif [ -n "$VS110COMNTOOLS" ]; then
+        echo -e '@echo off\r\ncall "%VS110COMNTOOLS%..\\..\\VC\\bin\\amd64\\vcvars64.bat"\r\ncl /EHsc %*' > "$HELPER"
+    fi
     chmod +x "$HELPER"
 }
 
