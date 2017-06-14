@@ -115,5 +115,5 @@ function doExecute {
 doPrepare
 removeHeader
 calcHash
-doCompile
+(doCompile)
 doExecute "$@"
