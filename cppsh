@@ -95,10 +95,10 @@ function doCompile {
 
         case $(uname) in
             Linux)
-                g++ -I"$DIR" $CPPFLAGS -std=c++1z $CXXFLAGS "$TEMP_CPP" -o "$BIN" $LDFLAGS -pthread $LIBS -lstdc++fs> "$LOG"
+                g++ -I. $CPPFLAGS -std=c++1z $CXXFLAGS "$TEMP_CPP" -o "$BIN" $LDFLAGS -pthread $LIBS -lstdc++fs> "$LOG"
                 ;;
             Darwin)
-                clang++ -I"$DIR" $CPPFLAGS -std=c++1y -stdlib=libc++ $CXXFLAGS "$TEMP_CPP" -o "$BIN" $LDFLAGS $LIBS > "$LOG"
+                clang++ -I. $CPPFLAGS -std=c++1y -stdlib=libc++ $CXXFLAGS "$TEMP_CPP" -o "$BIN" $LDFLAGS $LIBS > "$LOG"
                 ;;
             CYGWIN*)
                 WTEMP_DIR=$(cygpath -w "$TEMP_DIR")
