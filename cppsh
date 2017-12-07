@@ -16,16 +16,29 @@ HELPER="$TEMP_DIR/compile.bat"
 LOG="$TEMP_DIR/error.log"
 
 function createHelper {
+    # VS2017 has no VS150COMNTOOLS
+    if [ -d 'C:\Program Files (x86)\Microsoft Visual Studio\2017\Community\Common7\Tools\' ]; then
+        export VS150COMNTOOLS='C:\Program Files (x86)\Microsoft Visual Studio\2017\Community\Common7\Tools\'
+    fi
+    
+    echo -e '@echo off\r\n' > "$HELPER"
+    
+    # VS 2017 Community
+    if [ -n "$VS150COMNTOOLS" ]; then
+        echo -ne 'call "%VS150COMNTOOLS%..\\..\\VC\\Auxiliary\\Build\\vcvars64.bat"' >> "$HELPER"
     # VS 2015
-    if [ -n "$VS140COMNTOOLS" ]; then
-        echo -e '@echo off\r\ncall "%VS140COMNTOOLS%..\\..\\VC\\bin\\amd64\\vcvars64.bat"\r\ncl /EHsc %*' > "$HELPER"
+    elif [ -n "$VS140COMNTOOLS" ]; then
+        echo -ne 'call "%VS140COMNTOOLS%..\\..\\VC\\bin\\amd64\\vcvars64.bat"' >> "$HELPER"
     # VS 2013
     elif [ -n "$VS120COMNTOOLS" ]; then
-        echo -e '@echo off\r\ncall "%VS120COMNTOOLS%..\\..\\VC\\bin\\amd64\\vcvars64.bat"\r\ncl /EHsc %*' > "$HELPER"
+        echo -ne 'call "%VS120COMNTOOLS%..\\..\\VC\\bin\\amd64\\vcvars64.bat"' >> "$HELPER"
     # VS 2012
     elif [ -n "$VS110COMNTOOLS" ]; then
-        echo -e '@echo off\r\ncall "%VS110COMNTOOLS%..\\..\\VC\\bin\\amd64\\vcvars64.bat"\r\ncl /EHsc %*' > "$HELPER"
+        echo -ne 'call "%VS110COMNTOOLS%..\\..\\VC\\bin\\amd64\\vcvars64.bat"' >> "$HELPER"
     fi
+    
+    echo -e ' > nul\r\n' >> "$HELPER"
+    echo -e 'cl /EHsc /nologo /D"_UNICODE" /D"UNICODE" %*' >> "$HELPER"
     chmod +x "$HELPER"
 }
 
@@ -92,7 +105,7 @@ function doCompile {
                 WTEMP_CPP=$(cygpath -w "$TEMP_CPP")
                 WBIN=$(cygpath -w "$BIN")
                 createHelper
-                "$HELPER" /D"_UNICODE" /D"UNICODE" /I"$DIR" $CPPFLAGS $CXXFLAGS "$WTEMP_CPP" /Fo"$WTEMP_DIR\\" /Fe"$WBIN" $LDFLAGS $LIBS 2> /dev/null 1> "$LOG"
+                "$HELPER" /I. $CPPFLAGS $CXXFLAGS "$WTEMP_CPP" /Fo"$WTEMP_DIR\\" /Fe"$WBIN" $LDFLAGS $LIBS 2> /dev/null 1> "$LOG"
                 ;;
             *)
                 echo "Error: Unknown OS."
