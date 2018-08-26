@@ -96,12 +96,12 @@ function doCompile {
 
         case $(uname) in
             Linux)
-                g++ -I. $CPPFLAGS -std=c++1z $CXXFLAGS "$TEMP_CPP" -o "$BIN" $LDFLAGS -pthread $LIBS -lstdc++fs> "$LOG"
                 [[ ! -z "$VERBOSE" ]] && echo "g++ -I. $CPPFLAGS -std=c++1z $CXXFLAGS \"$TEMP_CPP\" -o \"$BIN\" $LDFLAGS -pthread $LIBS -lstdc++fs"
+                g++ -I. $CPPFLAGS -std=c++1z $CXXFLAGS "$TEMP_CPP" -o "$BIN" $LDFLAGS -pthread $LIBS -lstdc++fs > "$LOG"
                 ;;
             Darwin)
-                clang++ -I. $CPPFLAGS -std=c++1y -stdlib=libc++ $CXXFLAGS "$TEMP_CPP" -o "$BIN" $LDFLAGS $LIBS > "$LOG"
                 [[ ! -z "$VERBOSE" ]] && echo "clang++ -I. $CPPFLAGS -std=c++1y -stdlib=libc++ $CXXFLAGS \"$TEMP_CPP\" -o \"$BIN\" $LDFLAGS $LIBS"
+                clang++ -I. $CPPFLAGS -std=c++1z -stdlib=libc++ $CXXFLAGS "$TEMP_CPP" -o "$BIN" $LDFLAGS $LIBS -lpthread > "$LOG"
                 ;;
             CYGWIN*)
                 WTEMP_DIR=$(cygpath -w "$TEMP_DIR")
