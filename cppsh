@@ -84,6 +84,7 @@ function getFlags {
     CXXFLAGS=$(grep -Po '(?<=cppsh::CXXFLAGS).*' < "$TEMP_CPP")
      LDFLAGS=$(grep -Po '(?<=cppsh::LDFLAGS).*'  < "$TEMP_CPP")
         LIBS=$(grep -Po '(?<=cppsh::LIBS).*'     < "$TEMP_CPP")
+     VERBOSE=$(grep -Po '(?<=cppsh::VERBOSE).*'  < "$TEMP_CPP")
 }
 
 function doCompile {
@@ -96,15 +97,18 @@ function doCompile {
         case $(uname) in
             Linux)
                 g++ -I. $CPPFLAGS -std=c++1z $CXXFLAGS "$TEMP_CPP" -o "$BIN" $LDFLAGS -pthread $LIBS -lstdc++fs> "$LOG"
+                [[ ! -z "$VERBOSE" ]] && echo "g++ -I. $CPPFLAGS -std=c++1z $CXXFLAGS \"$TEMP_CPP\" -o \"$BIN\" $LDFLAGS -pthread $LIBS -lstdc++fs"
                 ;;
             Darwin)
                 clang++ -I. $CPPFLAGS -std=c++1y -stdlib=libc++ $CXXFLAGS "$TEMP_CPP" -o "$BIN" $LDFLAGS $LIBS > "$LOG"
+                [[ ! -z "$VERBOSE" ]] && echo "clang++ -I. $CPPFLAGS -std=c++1y -stdlib=libc++ $CXXFLAGS \"$TEMP_CPP\" -o \"$BIN\" $LDFLAGS $LIBS"
                 ;;
             CYGWIN*)
                 WTEMP_DIR=$(cygpath -w "$TEMP_DIR")
                 WTEMP_CPP=$(cygpath -w "$TEMP_CPP")
                 WBIN=$(cygpath -w "$BIN")
                 createHelper
+                [[ ! -z "$VERBOSE" ]] && echo "cl /EHsc /nologo /D_UNICODE /DUNICODE /I. $CPPFLAGS $CXXFLAGS \"$WTEMP_CPP\" /Fo\"$WTEMP_DIR\\\" /Fe\"$WBIN\" $LDFLAGS $LIBS"
                 "$HELPER" /I. $CPPFLAGS $CXXFLAGS "$WTEMP_CPP" /Fo"$WTEMP_DIR\\" /Fe"$WBIN" $LDFLAGS $LIBS 2> /dev/null 1> "$LOG"
                 ;;
             *)
