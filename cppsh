@@ -5,6 +5,13 @@ if [ $# -lt 1 ]; then
     exit 1
 fi
 
+# GNU grep is ggrep on macOS
+if [ $(uname) == "Darwin" ]; then
+    GREP="ggrep"
+else
+    GREP="grep"
+fi
+
 ORIG="$1"
 BASE=$(basename "$ORIG")
 DIR=$(dirname "$ORIG")
@@ -80,11 +87,11 @@ function calcHash {
 }
 
 function getFlags {
-    CPPFLAGS=$(grep -Po '(?<=cppsh::CPPFLAGS).*' < "$TEMP_CPP")
-    CXXFLAGS=$(grep -Po '(?<=cppsh::CXXFLAGS).*' < "$TEMP_CPP")
-     LDFLAGS=$(grep -Po '(?<=cppsh::LDFLAGS).*'  < "$TEMP_CPP")
-        LIBS=$(grep -Po '(?<=cppsh::LIBS).*'     < "$TEMP_CPP")
-     VERBOSE=$(grep -Po '(?<=cppsh::VERBOSE).*'  < "$TEMP_CPP")
+    CPPFLAGS=$($GREP -Po '(?<=cppsh::CPPFLAGS).*' < "$TEMP_CPP")
+    CXXFLAGS=$($GREP -Po '(?<=cppsh::CXXFLAGS).*' < "$TEMP_CPP")
+     LDFLAGS=$($GREP -Po '(?<=cppsh::LDFLAGS).*'  < "$TEMP_CPP")
+        LIBS=$($GREP -Po '(?<=cppsh::LIBS).*'     < "$TEMP_CPP")
+     VERBOSE=$($GREP -Po '(?<=cppsh::VERBOSE).*'  < "$TEMP_CPP")
 }
 
 function doCompile {
