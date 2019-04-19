@@ -110,8 +110,8 @@ function doCompile {
                 g++ -I. $CPPFLAGS -std=c++1z $CXXFLAGS "$TEMP_CPP" -o "$BIN" $LDFLAGS -pthread $LIBS -lstdc++fs > "$LOG"
                 ;;
             Darwin)
-                [[ ! -z "$VERBOSE" ]] && echo "clang++ -I. $CPPFLAGS -std=c++1y -stdlib=libc++ $CXXFLAGS \"$TEMP_CPP\" -o \"$BIN\" $LDFLAGS $LIBS"
-                clang++ -I. $CPPFLAGS -std=c++1z -stdlib=libc++ $CXXFLAGS "$TEMP_CPP" -o "$BIN" $LDFLAGS $LIBS -lpthread > "$LOG"
+                [[ ! -z "$VERBOSE" ]] && echo "clang++ -I. $CPPFLAGS -std=c++17 -stdlib=libc++ $CXXFLAGS \"$TEMP_CPP\" -o \"$BIN\" $LDFLAGS $LIBS"
+                clang++ -I. $CPPFLAGS -std=c++17 -stdlib=libc++ $CXXFLAGS "$TEMP_CPP" -o "$BIN" $LDFLAGS $LIBS -lpthread > "$LOG"
                 ;;
             CYGWIN*)
                 WTEMP_DIR=$(cygpath -w "$TEMP_DIR")
