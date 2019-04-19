@@ -8,7 +8,9 @@ fi
 # GNU grep is ggrep on macOS
 if [ $(uname) == "Darwin" ]; then
     GREP="ggrep"
+    TEMP_DIR="${TMPDIR}cppsh"
 else
+    TEMP_DIR="/tmp/cppsh"
     GREP="grep"
 fi
 
@@ -16,7 +18,6 @@ ORIG="$1"
 BASE=$(basename "$ORIG")
 DIR=$(dirname "$ORIG")
 
-TEMP_DIR="/tmp/cppsh"
 TEMP_CPP="$TEMP_DIR/$BASE"
 BIN="$TEMP_DIR/${BASE%.cpp}.exe"
 HELPER="$TEMP_DIR/compile.bat"
