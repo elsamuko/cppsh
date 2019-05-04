@@ -123,7 +123,7 @@ function doCompile {
     if [ ! -f "$BIN" ]; then
 
         getFlags
-        cd "$DIR"
+        cd "$DIR" || return
 
         case $(uname) in
             Linux)
