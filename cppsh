@@ -71,7 +71,7 @@ function maybeCreate {
         echo "Cannot compile a folder: $ORIG"
         exit 1
     fi
-    
+
     # create if arg does not exit
     if [ ! -f "$ORIG" ]; then
         echo -n "#!/usr/bin/env cppsh
@@ -127,11 +127,11 @@ function doCompile {
 
         case $(uname) in
             Linux)
-                [[ ! -z "$VERBOSE" ]] && echo "g++ -I. $CPPFLAGS -std=c++1z $CXXFLAGS \"$TEMP_CPP\" -o \"$BIN\" $LDFLAGS -pthread $LIBS -lstdc++fs"
+                [[ -n "$VERBOSE" ]] && echo "g++ -I. $CPPFLAGS -std=c++1z $CXXFLAGS \"$TEMP_CPP\" -o \"$BIN\" $LDFLAGS -pthread $LIBS -lstdc++fs"
                 g++ -I. $CPPFLAGS -std=c++1z $CXXFLAGS "$TEMP_CPP" -o "$BIN" $LDFLAGS -pthread $LIBS -lstdc++fs > "$LOG"
                 ;;
             Darwin)
-                [[ ! -z "$VERBOSE" ]] && echo "clang++ -I. $CPPFLAGS -std=c++17 -stdlib=libc++ $CXXFLAGS \"$TEMP_CPP\" -o \"$BIN\" $LDFLAGS $LIBS"
+                [[ -n "$VERBOSE" ]] && echo "clang++ -I. $CPPFLAGS -std=c++17 -stdlib=libc++ $CXXFLAGS \"$TEMP_CPP\" -o \"$BIN\" $LDFLAGS $LIBS"
                 clang++ -I. $CPPFLAGS -std=c++17 -stdlib=libc++ $CXXFLAGS "$TEMP_CPP" -o "$BIN" $LDFLAGS $LIBS -lpthread &> "$LOG"
                 ;;
             CYGWIN*)
@@ -139,7 +139,7 @@ function doCompile {
                 WTEMP_CPP=$(cygpath -w "$TEMP_CPP")
                 WBIN=$(cygpath -w "$BIN")
                 createHelper
-                [[ ! -z "$VERBOSE" ]] && echo "cl /EHsc /nologo /D_UNICODE /DUNICODE /I. $CPPFLAGS $CXXFLAGS \"$WTEMP_CPP\" /Fo\"$WTEMP_DIR\\\" /Fe\"$WBIN\" $LDFLAGS $LIBS"
+                [[ -n "$VERBOSE" ]] && echo "cl /EHsc /nologo /D_UNICODE /DUNICODE /I. $CPPFLAGS $CXXFLAGS \"$WTEMP_CPP\" /Fo\"$WTEMP_DIR\\\" /Fe\"$WBIN\" $LDFLAGS $LIBS"
                 "$HELPER" /I. $CPPFLAGS $CXXFLAGS "$WTEMP_CPP" /Fo"$WTEMP_DIR\\" /Fe"$WBIN" $LDFLAGS $LIBS 2> /dev/null 1> "$LOG"
                 ;;
             *)
