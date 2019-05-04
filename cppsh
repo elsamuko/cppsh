@@ -65,6 +65,20 @@ function doPrepare {
     pleaseRemove "$LOG"
 }
 
+function maybeCreate {
+    if [ ! -f "$ORIG" ]; then
+        echo -n "#!/usr/bin/env cppsh
+
+#include <iostream>
+
+int main() {
+    std::cout << \"Hello from generated $BASE\" << std::endl;
+    return 0;
+}
+" > "$ORIG"
+    fi    
+}
+
 function removeHeader {
     case $(head -n 1 "$ORIG" | xargs) in
         '#!'*)
@@ -140,6 +154,7 @@ function doExecute {
 
 # main
 doPrepare
+maybeCreate
 removeHeader
 calcHash
 (doCompile)
