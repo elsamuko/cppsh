@@ -66,6 +66,13 @@ function doPrepare {
 }
 
 function maybeCreate {
+    # exit if arg is a folder
+    if [ -d "$ORIG" ]; then
+        echo "Cannot compile a folder: $ORIG"
+        exit 1
+    fi
+    
+    # create if arg does not exit
     if [ ! -f "$ORIG" ]; then
         echo -n "#!/usr/bin/env cppsh
 
