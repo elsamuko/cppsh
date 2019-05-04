@@ -15,6 +15,10 @@ And then execute the file directly:
     $ chmod +x file.cpp
 	$ ./file.cpp
 
+If the source file does not exist, it's auto-generated with a hello world stump.
+
+    $ cppsh doesNotExist.cpp
+
 ## Example
 
 The file `test.cpp` shows all commandline arguments.
