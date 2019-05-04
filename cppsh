@@ -6,7 +6,7 @@ if [ $# -lt 1 ]; then
 fi
 
 # GNU grep is ggrep on macOS
-if [ $(uname) == "Darwin" ]; then
+if [ "$(uname)" == "Darwin" ]; then
     GREP="ggrep"
     TEMP_DIR="${TMPDIR}cppsh"
 else
