@@ -12,7 +12,7 @@ else
 fi
 
 function assert {
-    [[ ! "$1" ]] && (echo "assertion failed" && exit 1)
+    [[ ! "$1" ]] && echo "assertion failed" && exit 1
 }
 
 function pleaseRemove {
@@ -65,6 +65,50 @@ function testNoSource {
     assert "$(echo "$RES" | "$GREP" "Hello from generated simple.cpp")"
 }
 
+function testCpp11 {
+    local OUT="Hello from testSimple"
+    local SRC="#!/usr/bin/env cppsh
+#include <iostream>
+int main() {
+    for( const auto& i : { 1, 2, 3 } ) {
+        std::cout << i << \"$OUT\" << std::endl;
+    }
+    return 0;
+}
+"
+    testWithOutput "$SRC" "$OUT"
+}
+
+function testCpp14 {
+    local OUT="Hello from testSimple"
+    local SRC="#!/usr/bin/env cppsh
+#include <iostream>
+#include <chrono>
+using namespace std::chrono_literals;
+int main() {
+    auto tenHours = 10h;
+    std::cout << tenHours.count() << \"$OUT\" << std::endl;
+    return 0;
+}
+"
+    testWithOutput "$SRC" "$OUT"
+}
+
+function testCpp17 {
+    local OUT="Hello from testSimple"
+    local SRC="#!/usr/bin/env cppsh
+#include <iostream>
+#include <optional>
+#include <string>
+int main() {
+    std::optional<std::string> test = \"opt: \";
+    std::cout << *test << \"$OUT\" << std::endl;
+    return 0;
+}
+"
+    testWithOutput "$SRC" "$OUT"
+}
+
 doPrepare
 
 echo "Running testSimple"
@@ -75,5 +119,14 @@ testCompileError
 
 echo "Running testNoSource"
 testNoSource
+
+echo "Running testCpp11"
+testCpp11
+
+echo "Running testCpp14"
+testCpp14
+
+echo "Running testCpp17"
+testCpp17
 
 echo "Tests succeeded"
