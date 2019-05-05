@@ -7,7 +7,7 @@ if [ "$(uname)" == "Darwin" ]; then
     TEST_DIR="${TMPDIR}cppsh_test"
 else
     TEMP_DIR="/tmp/cppsh"
-    TEST_DIR="${TMPDIR}cppsh_test"
+    TEST_DIR="/tmp/cppsh_test"
     GREP="grep"
 fi
 
