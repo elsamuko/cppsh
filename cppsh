@@ -48,7 +48,7 @@ function createHelper {
     fi
     
     echo -e ' > nul\r\n' >> "$HELPER"
-    echo -e 'cl /EHsc /nologo /D"_UNICODE" /D"UNICODE" %*' >> "$HELPER"
+    echo -e 'cl /EHsc /std:c++17 /nologo /D"_UNICODE" /D"UNICODE" %*' >> "$HELPER"
     chmod +x "$HELPER"
 }
 
@@ -140,7 +140,7 @@ function doCompile {
                 WTEMP_CPP=$(cygpath -w "$TEMP_CPP")
                 WBIN=$(cygpath -w "$BIN")
                 createHelper
-                [[ -n "$VERBOSE" ]] && echo "cl /EHsc /nologo /D_UNICODE /DUNICODE /I. $CPPFLAGS $CXXFLAGS \"$WTEMP_CPP\" /Fo\"$WTEMP_DIR\\\" /Fe\"$WBIN\" $LDFLAGS $LIBS"
+                [[ -n "$VERBOSE" ]] && echo "cl /EHsc /std:c++17 /nologo /D_UNICODE /DUNICODE /I. $CPPFLAGS $CXXFLAGS \"$WTEMP_CPP\" /Fo\"$WTEMP_DIR\\\" /Fe\"$WBIN\" $LDFLAGS $LIBS"
                 "$HELPER" /I. $CPPFLAGS $CXXFLAGS "$WTEMP_CPP" /Fo"$WTEMP_DIR\\" /Fe"$WBIN" $LDFLAGS $LIBS &> "$LOG"
                 ;;
             *)
