@@ -128,7 +128,7 @@ function doCompile {
         case $(uname) in
             Linux)
                 [[ -n "$VERBOSE" ]] && echo "g++ -I. $CPPFLAGS -std=c++1z $CXXFLAGS \"$TEMP_CPP\" -o \"$BIN\" $LDFLAGS -pthread $LIBS -lstdc++fs"
-                g++ -I. $CPPFLAGS -std=c++1z $CXXFLAGS "$TEMP_CPP" -o "$BIN" $LDFLAGS -pthread $LIBS -lstdc++fs > "$LOG"
+                g++ -I. $CPPFLAGS -std=c++1z $CXXFLAGS "$TEMP_CPP" -o "$BIN" $LDFLAGS -pthread $LIBS -lstdc++fs &> "$LOG"
                 ;;
             Darwin)
                 [[ -n "$VERBOSE" ]] && echo "clang++ -I. $CPPFLAGS -std=c++17 -stdlib=libc++ $CXXFLAGS \"$TEMP_CPP\" -o \"$BIN\" $LDFLAGS $LIBS"
@@ -140,7 +140,7 @@ function doCompile {
                 WBIN=$(cygpath -w "$BIN")
                 createHelper
                 [[ -n "$VERBOSE" ]] && echo "cl /EHsc /nologo /D_UNICODE /DUNICODE /I. $CPPFLAGS $CXXFLAGS \"$WTEMP_CPP\" /Fo\"$WTEMP_DIR\\\" /Fe\"$WBIN\" $LDFLAGS $LIBS"
-                "$HELPER" /I. $CPPFLAGS $CXXFLAGS "$WTEMP_CPP" /Fo"$WTEMP_DIR\\" /Fe"$WBIN" $LDFLAGS $LIBS 2> /dev/null 1> "$LOG"
+                "$HELPER" /I. $CPPFLAGS $CXXFLAGS "$WTEMP_CPP" /Fo"$WTEMP_DIR\\" /Fe"$WBIN" $LDFLAGS $LIBS &> "$LOG"
                 ;;
             *)
                 echo "Error: Unknown OS."
