@@ -128,8 +128,8 @@ function doCompile {
 
         case $(uname) in
             Linux)
-                [[ -n "$VERBOSE" ]] && echo "g++ -I. $CPPFLAGS -std=c++1z $CXXFLAGS \"$TEMP_CPP\" -o \"$BIN\" $LDFLAGS -pthread $LIBS -lstdc++fs"
-                g++ -I. $CPPFLAGS -std=c++1z $CXXFLAGS "$TEMP_CPP" -o "$BIN" $LDFLAGS -pthread $LIBS -lstdc++fs &> "$LOG"
+                [[ -n "$VERBOSE" ]] && echo "g++ -I. $CPPFLAGS -std=c++17 $CXXFLAGS \"$TEMP_CPP\" -o \"$BIN\" $LDFLAGS -pthread $LIBS -lstdc++fs"
+                g++ -I. $CPPFLAGS -std=c++17 $CXXFLAGS "$TEMP_CPP" -o "$BIN" $LDFLAGS -pthread $LIBS -lstdc++fs &> "$LOG"
                 ;;
             Darwin)
                 [[ -n "$VERBOSE" ]] && echo "clang++ -I. $CPPFLAGS -std=c++17 -stdlib=libc++ $CXXFLAGS \"$TEMP_CPP\" -o \"$BIN\" $LDFLAGS $LIBS"
