@@ -27,28 +27,24 @@ HELPER="$TEMP_DIR/compile.bat"
 LOG="$TEMP_DIR/error.log"
 
 function createHelper {
-    # VS2017 has no VS150COMNTOOLS
-    if [ -d 'C:\Program Files (x86)\Microsoft Visual Studio\2017\Community\Common7\Tools\' ]; then
-        export VS150COMNTOOLS='C:\Program Files (x86)\Microsoft Visual Studio\2017\Community\Common7\Tools\'
-    elif [ -d 'C:\Program Files (x86)\Microsoft Visual Studio\2017\BuildTools\Common7\Tools\' ]; then
-        export VS150COMNTOOLS='C:\Program Files (x86)\Microsoft Visual Studio\2017\BuildTools\Common7\Tools\'
-    fi
-    
-    # VS2019 has no VS150COMNTOOLS
-    if [ -d 'C:\Program Files (x86)\Microsoft Visual Studio\2019\Community\Common7\Tools\' ]; then
-        export VS160COMNTOOLS='C:\Program Files (x86)\Microsoft Visual Studio\2019\Community\Common7\Tools\'
-    elif [ -d 'C:\Program Files (x86)\Microsoft Visual Studio\2019\BuildTools\Common7\Tools\' ]; then
-        export VS160COMNTOOLS='C:\Program Files (x86)\Microsoft Visual Studio\2019\BuildTools\Common7\Tools\'
-    fi
+    local VERSIONS=("2019" "2017")
+    local EDITIONS=("BuildTools" "Community" "Professional" "Enterprise")
+
+    for VERSION in "${VERSIONS[@]}"; do
+        for EDITION in "${EDITIONS[@]}"; do
+            local VCVARS_DIR="C:/Program Files (x86)/Microsoft Visual Studio/$VERSION/$EDITION/VC/Auxiliary/Build"
+            if [ -d "$VCVARS_DIR" ]; then
+                export VSNEWCOMNTOOLS="${VCVARS_DIR////\\}"
+                break 2
+            fi
+        done
+    done
 
     echo -e '@echo off\r\n' > "$HELPER"
     
-    # VS 2019 BuildTools/Community
-    if [ -n "$VS160COMNTOOLS" ]; then
-        echo -ne 'call "%VS160COMNTOOLS%..\\..\\VC\\Auxiliary\\Build\\vcvars64.bat"' >> "$HELPER"
-    # VS 2017 BuildTools/Community
-    elif [ -n "$VS150COMNTOOLS" ]; then
-        echo -ne 'call "%VS150COMNTOOLS%..\\..\\VC\\Auxiliary\\Build\\vcvars64.bat"' >> "$HELPER"
+    # VS 2017/2019 Professional/BuildTools/Community
+    if [ -n "$VSNEWCOMNTOOLS" ]; then
+        echo -ne 'call "%VSNEWCOMNTOOLS%\\vcvars64.bat"' >> "$HELPER"
     # VS 2015
     elif [ -n "$VS140COMNTOOLS" ]; then
         echo -ne 'call "%VS140COMNTOOLS%..\\..\\VC\\bin\\amd64\\vcvars64.bat"' >> "$HELPER"
