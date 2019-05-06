@@ -86,8 +86,15 @@ int main() {
     return 0;
 }
 " > "$ORIG"
+
+        # check if file exists now
+        if [ ! -f "$ORIG" ]; then
+            echo "Could not write to $ORIG"
+            exit 1
+        fi
+
         chmod +x "$ORIG"
-    fi    
+    fi
 }
 
 function removeHeader {
