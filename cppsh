@@ -34,10 +34,20 @@ function createHelper {
         export VS150COMNTOOLS='C:\Program Files (x86)\Microsoft Visual Studio\2017\BuildTools\Common7\Tools\'
     fi
     
+    # VS2019 has no VS150COMNTOOLS
+    if [ -d 'C:\Program Files (x86)\Microsoft Visual Studio\2019\Community\Common7\Tools\' ]; then
+        export VS160COMNTOOLS='C:\Program Files (x86)\Microsoft Visual Studio\2019\Community\Common7\Tools\'
+    elif [ -d 'C:\Program Files (x86)\Microsoft Visual Studio\2019\BuildTools\Common7\Tools\' ]; then
+        export VS160COMNTOOLS='C:\Program Files (x86)\Microsoft Visual Studio\2019\BuildTools\Common7\Tools\'
+    fi
+
     echo -e '@echo off\r\n' > "$HELPER"
     
-    # VS 2017 Community
-    if [ -n "$VS150COMNTOOLS" ]; then
+    # VS 2019 BuildTools/Community
+    if [ -n "$VS160COMNTOOLS" ]; then
+        echo -ne 'call "%VS160COMNTOOLS%..\\..\\VC\\Auxiliary\\Build\\vcvars64.bat"' >> "$HELPER"
+    # VS 2017 BuildTools/Community
+    elif [ -n "$VS150COMNTOOLS" ]; then
         echo -ne 'call "%VS150COMNTOOLS%..\\..\\VC\\Auxiliary\\Build\\vcvars64.bat"' >> "$HELPER"
     # VS 2015
     elif [ -n "$VS140COMNTOOLS" ]; then
