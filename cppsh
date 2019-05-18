@@ -145,10 +145,12 @@ function doCompile {
         case $(uname) in
             Linux)
                 [[ -n "$VERBOSE" ]] && echo "g++ -I. $CPPFLAGS -std=c++17 $CXXFLAGS \"$TEMP_CPP\" -o \"$BIN\" $LDFLAGS -pthread $LIBS -lstdc++fs"
+                # shellcheck disable=SC2086
                 g++ -I. $CPPFLAGS -std=c++17 $CXXFLAGS "$TEMP_CPP" -o "$BIN" $LDFLAGS -pthread $LIBS -lstdc++fs &> "$LOG"
                 ;;
             Darwin)
                 [[ -n "$VERBOSE" ]] && echo "clang++ -I. $CPPFLAGS -std=c++17 -stdlib=libc++ $CXXFLAGS \"$TEMP_CPP\" -o \"$BIN\" $LDFLAGS $LIBS"
+                # shellcheck disable=SC2086
                 clang++ -I. $CPPFLAGS -std=c++17 -stdlib=libc++ $CXXFLAGS "$TEMP_CPP" -o "$BIN" $LDFLAGS $LIBS -lpthread &> "$LOG"
                 ;;
             CYGWIN*)
@@ -157,6 +159,7 @@ function doCompile {
                 WBIN=$(cygpath -w "$BIN")
                 createHelper
                 [[ -n "$VERBOSE" ]] && echo "cl /EHsc /std:c++17 /nologo /D_UNICODE /DUNICODE /I. $CPPFLAGS $CXXFLAGS \"$WTEMP_CPP\" /Fo\"$WTEMP_DIR\\\" /Fe\"$WBIN\" $LDFLAGS $LIBS"
+                # shellcheck disable=SC2086
                 "$HELPER" /I. $CPPFLAGS $CXXFLAGS "$WTEMP_CPP" /Fo"$WTEMP_DIR\\" /Fe"$WBIN" $LDFLAGS $LIBS &> "$LOG"
                 ;;
             MINGW*|MSYS*)
@@ -165,6 +168,7 @@ function doCompile {
                 WBIN=$(cygpath -w "$BIN")
                 createHelper
                 [[ -n "$VERBOSE" ]] && echo "cl /EHsc /std:c++17 /nologo /D_UNICODE /DUNICODE /I. $CPPFLAGS $CXXFLAGS \"$WTEMP_CPP\" /Fo\"$WTEMP_DIR\\\" /Fe\"$WBIN\" $LDFLAGS $LIBS"
+                # shellcheck disable=SC2086
                 "$HELPER" //I. $CPPFLAGS $CXXFLAGS "$WTEMP_CPP" //Fo"$WTEMP_DIR\\" //Fe"$WBIN" $LDFLAGS $LIBS &> "$LOG"
                 ;;
             *)
