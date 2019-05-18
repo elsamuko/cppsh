@@ -44,7 +44,7 @@ function createHelper {
     
     # VS 2017/2019 Professional/BuildTools/Community
     if [ -n "$VSNEWCOMNTOOLS" ]; then
-        echo -ne 'call "%VSNEWCOMNTOOLS%\\vcvars64.bat"' >> "$HELPER"
+        echo -ne "call \"$VSNEWCOMNTOOLS\\\\vcvars64.bat\"" >> "$HELPER"
     # VS 2015
     elif [ -n "$VS140COMNTOOLS" ]; then
         echo -ne 'call "%VS140COMNTOOLS%..\\..\\VC\\bin\\amd64\\vcvars64.bat"' >> "$HELPER"
@@ -158,6 +158,14 @@ function doCompile {
                 createHelper
                 [[ -n "$VERBOSE" ]] && echo "cl /EHsc /std:c++17 /nologo /D_UNICODE /DUNICODE /I. $CPPFLAGS $CXXFLAGS \"$WTEMP_CPP\" /Fo\"$WTEMP_DIR\\\" /Fe\"$WBIN\" $LDFLAGS $LIBS"
                 "$HELPER" /I. $CPPFLAGS $CXXFLAGS "$WTEMP_CPP" /Fo"$WTEMP_DIR\\" /Fe"$WBIN" $LDFLAGS $LIBS &> "$LOG"
+                ;;
+            MINGW*|MSYS*)
+                WTEMP_DIR=$(cygpath -w "$TEMP_DIR")
+                WTEMP_CPP=$(cygpath -w "$TEMP_CPP")
+                WBIN=$(cygpath -w "$BIN")
+                createHelper
+                [[ -n "$VERBOSE" ]] && echo "cl /EHsc /std:c++17 /nologo /D_UNICODE /DUNICODE /I. $CPPFLAGS $CXXFLAGS \"$WTEMP_CPP\" /Fo\"$WTEMP_DIR\\\" /Fe\"$WBIN\" $LDFLAGS $LIBS"
+                "$HELPER" //I. $CPPFLAGS $CXXFLAGS "$WTEMP_CPP" //Fo"$WTEMP_DIR\\" //Fe"$WBIN" $LDFLAGS $LIBS &> "$LOG"
                 ;;
             *)
                 echo "Error: Unknown OS."
