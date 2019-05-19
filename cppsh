@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 
-if [ $# -lt 1 ]; then
+if [ $# -lt 1 ] || [[ "$1" == "-"* ]]; then
     echo "Usage:"
     echo " * cppsh source.cpp"
     echo " * or add \"#!/usr/bin/env cppsh\" on top of your source file and execute it directly"
