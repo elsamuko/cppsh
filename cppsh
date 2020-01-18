@@ -88,7 +88,7 @@ function maybeCreate {
 #include <iostream>
 #define LOG( A ) std::cout << A << std::endl;
 
-int main() {
+int main( int argc, char* argv[] ) {
     LOG( \"Hello from generated $BASE\" );
     return 0;
 }
