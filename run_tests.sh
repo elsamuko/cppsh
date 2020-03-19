@@ -109,6 +109,19 @@ int main() {
     testWithOutput "$SRC" "$OUT"
 }
 
+function testCpp20 {
+    local OUT="Hello from testSimple"
+    local SRC="#!/usr/bin/env cppsh
+#include <iostream>
+#include <numbers>
+int main() {
+    std::cout << std::pi << \"$OUT\" << std::endl;
+    return 0;
+}
+"
+    testWithOutput "$SRC" "$OUT"
+}
+
 doPrepare
 
 echo "Running testSimple"
@@ -128,5 +141,8 @@ testCpp14
 
 echo "Running testCpp17"
 testCpp17
+
+echo "Running testCpp20"
+testCpp20
 
 echo "Tests succeeded"
