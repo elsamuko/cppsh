@@ -57,7 +57,7 @@ function createHelper {
     fi
     
     echo -e ' > nul\r\n' >> "$HELPER"
-    echo -e 'cl /EHsc /std:c++17 /nologo /D"_UNICODE" /D"UNICODE" %*' >> "$HELPER"
+    echo -e 'cl /EHsc /std:c++latest /nologo /D"_UNICODE" /D"UNICODE" %*' >> "$HELPER"
     chmod +x "$HELPER"
 }
 
@@ -145,21 +145,21 @@ function doCompile {
 
         case $(uname) in
             Linux)
-                [[ -n "$VERBOSE" ]] && echo "g++ -I. $CPPFLAGS -std=c++17 $CXXFLAGS \"$TEMP_CPP\" -o \"$BIN\" $LDFLAGS -pthread $LIBS -lstdc++fs"
+                [[ -n "$VERBOSE" ]] && echo "g++ -I. $CPPFLAGS -std=c++2a $CXXFLAGS \"$TEMP_CPP\" -o \"$BIN\" $LDFLAGS -pthread $LIBS -lstdc++fs"
                 # shellcheck disable=SC2086
-                g++ -I. $CPPFLAGS -std=c++17 $CXXFLAGS "$TEMP_CPP" -o "$BIN" $LDFLAGS -pthread $LIBS -lstdc++fs &> "$LOG"
+                g++ -I. $CPPFLAGS -std=c++2a $CXXFLAGS "$TEMP_CPP" -o "$BIN" $LDFLAGS -pthread $LIBS -lstdc++fs &> "$LOG"
                 ;;
             Darwin)
-                [[ -n "$VERBOSE" ]] && echo "clang++ -I. $CPPFLAGS -std=c++17 -stdlib=libc++ $CXXFLAGS \"$TEMP_CPP\" -o \"$BIN\" $LDFLAGS $LIBS"
+                [[ -n "$VERBOSE" ]] && echo "clang++ -I. $CPPFLAGS -std=c++2a -stdlib=libc++ $CXXFLAGS \"$TEMP_CPP\" -o \"$BIN\" $LDFLAGS $LIBS"
                 # shellcheck disable=SC2086
-                clang++ -I. $CPPFLAGS -std=c++17 -stdlib=libc++ $CXXFLAGS "$TEMP_CPP" -o "$BIN" $LDFLAGS $LIBS -lpthread &> "$LOG"
+                clang++ -I. $CPPFLAGS -std=c++2a -stdlib=libc++ $CXXFLAGS "$TEMP_CPP" -o "$BIN" $LDFLAGS $LIBS -lpthread &> "$LOG"
                 ;;
             CYGWIN*)
                 WTEMP_DIR=$(cygpath -w "$TEMP_DIR")
                 WTEMP_CPP=$(cygpath -w "$TEMP_CPP")
                 WBIN=$(cygpath -w "$BIN")
                 createHelper
-                [[ -n "$VERBOSE" ]] && echo "cl /EHsc /std:c++17 /nologo /D_UNICODE /DUNICODE /I. $CPPFLAGS $CXXFLAGS \"$WTEMP_CPP\" /Fo\"$WTEMP_DIR\\\" /Fe\"$WBIN\" $LDFLAGS $LIBS"
+                [[ -n "$VERBOSE" ]] && echo "cl /EHsc /std:c++latest /nologo /D_UNICODE /DUNICODE /I. $CPPFLAGS $CXXFLAGS \"$WTEMP_CPP\" /Fo\"$WTEMP_DIR\\\" /Fe\"$WBIN\" $LDFLAGS $LIBS"
                 # shellcheck disable=SC2086
                 "$HELPER" /I. $CPPFLAGS $CXXFLAGS "$WTEMP_CPP" /Fo"$WTEMP_DIR\\" /Fe"$WBIN" $LDFLAGS $LIBS &> "$LOG"
                 ;;
@@ -168,7 +168,7 @@ function doCompile {
                 WTEMP_CPP=$(cygpath -w "$TEMP_CPP")
                 WBIN=$(cygpath -w "$BIN")
                 createHelper
-                [[ -n "$VERBOSE" ]] && echo "cl /EHsc /std:c++17 /nologo /D_UNICODE /DUNICODE /I. $CPPFLAGS $CXXFLAGS \"$WTEMP_CPP\" /Fo\"$WTEMP_DIR\\\" /Fe\"$WBIN\" $LDFLAGS $LIBS"
+                [[ -n "$VERBOSE" ]] && echo "cl /EHsc /std:c++latest /nologo /D_UNICODE /DUNICODE /I. $CPPFLAGS $CXXFLAGS \"$WTEMP_CPP\" /Fo\"$WTEMP_DIR\\\" /Fe\"$WBIN\" $LDFLAGS $LIBS"
                 # shellcheck disable=SC2086
                 "$HELPER" //I. $CPPFLAGS $CXXFLAGS "$WTEMP_CPP" //Fo"$WTEMP_DIR\\" //Fe"$WBIN" $LDFLAGS $LIBS &> "$LOG"
                 ;;
