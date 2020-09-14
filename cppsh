@@ -5,6 +5,12 @@ if [ $# -lt 1 ] || [[ "$1" == "-"* ]]; then
     echo " * cppsh source.cpp"
     echo " * or add \"#!/usr/bin/env cppsh\" on top of your source file and execute it directly"
     echo " * if the source file does not exist, it is created with a hello world stump"
+    echo " * add compiler params as comments, e.g.:"
+    echo "   // cppsh::CPPFLAGS -DLOG=1"
+    echo "   // cppsh::CXXFLAGS -march=native"
+    echo "   // cppsh::LDFLAGS -flto"
+    echo "   // cppsh::LIBS -lcurl"
+    echo "   // cppsh::VERBOSE 1"
     exit 1
 fi
 
