@@ -166,18 +166,18 @@ function doCompile {
                 WTEMP_CPP=$(cygpath -w "$TEMP_CPP")
                 WBIN=$(cygpath -w "$BIN")
                 createHelper
-                [[ -n "$VERBOSE" ]] && echo "cl /EHsc /std:c++latest /nologo /D_UNICODE /DUNICODE /I. $CPPFLAGS $CXXFLAGS \"$WTEMP_CPP\" /Fo\"$WTEMP_DIR\\\" /Fe\"$WBIN\" $LDFLAGS $LIBS"
+                [[ -n "$VERBOSE" ]] && echo "cl /EHsc /std:c++latest /nologo /D_UNICODE /DUNICODE /I. $CPPFLAGS $CXXFLAGS \"$WTEMP_CPP\" /Fo\"$WTEMP_DIR\\\" /Fe\"$WBIN\" /link $LDFLAGS $LIBS"
                 # shellcheck disable=SC2086
-                "$HELPER" /I. $CPPFLAGS $CXXFLAGS "$WTEMP_CPP" /Fo"$WTEMP_DIR\\" /Fe"$WBIN" $LDFLAGS $LIBS &> "$LOG"
+                "$HELPER" /I. $CPPFLAGS $CXXFLAGS "$WTEMP_CPP" /Fo"$WTEMP_DIR\\" /Fe"$WBIN" /link $LDFLAGS $LIBS &> "$LOG"
                 ;;
             MINGW*|MSYS*)
                 WTEMP_DIR=$(cygpath -w "$TEMP_DIR")
                 WTEMP_CPP=$(cygpath -w "$TEMP_CPP")
                 WBIN=$(cygpath -w "$BIN")
                 createHelper
-                [[ -n "$VERBOSE" ]] && echo "cl /EHsc /std:c++latest /nologo /D_UNICODE /DUNICODE /I. $CPPFLAGS $CXXFLAGS \"$WTEMP_CPP\" /Fo\"$WTEMP_DIR\\\" /Fe\"$WBIN\" $LDFLAGS $LIBS"
+                [[ -n "$VERBOSE" ]] && echo "cl /EHsc /std:c++latest /nologo /D_UNICODE /DUNICODE /I. $CPPFLAGS $CXXFLAGS \"$WTEMP_CPP\" /Fo\"$WTEMP_DIR\\\" /Fe\"$WBIN\" /link $LDFLAGS $LIBS"
                 # shellcheck disable=SC2086
-                "$HELPER" //I. $CPPFLAGS $CXXFLAGS "$WTEMP_CPP" //Fo"$WTEMP_DIR\\" //Fe"$WBIN" $LDFLAGS $LIBS &> "$LOG"
+                "$HELPER" //I. $CPPFLAGS $CXXFLAGS "$WTEMP_CPP" //Fo"$WTEMP_DIR\\" //Fe"$WBIN" //link $LDFLAGS $LIBS &> "$LOG"
                 ;;
             *)
                 echo "Error: Unknown OS."
