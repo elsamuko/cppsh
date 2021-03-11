@@ -19,6 +19,17 @@ If the source file does not exist, it is created with a hello world stump.
 
     $ cppsh doesNotExist.cpp
 
+## Flags
+
+You can add compile/linker flags with special comments:
+```cpp
+   // cppsh::CPPFLAGS -DLOG=1
+   // cppsh::CXXFLAGS -march=native
+   // cppsh::LDFLAGS -flto
+   // cppsh::LIBS -lcurl
+   // cppsh::VERBOSE 1
+```
+
 ## Example
 
 The file `test.cpp` shows all commandline arguments.
