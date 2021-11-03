@@ -34,6 +34,7 @@ function doPrepare {
 function testWithOutput {
     echo -n "$1" > "$TEST_DIR/simple.cpp"
     RES=$(./cppsh "$TEST_DIR/simple.cpp")
+    # ./cppsh "$TEST_DIR/simple.cpp"
 
     assert "$(echo "$RES" | "$GREP" "$2")"
 }
@@ -62,7 +63,7 @@ function testNoSource {
     pleaseRemove "$TEST_DIR/simple.cpp"
     RES=$(./cppsh "$TEST_DIR/simple.cpp")
 
-    assert "$(echo "$RES" | "$GREP" "Hello from generated simple.cpp")"
+    assert "$(echo "$RES" | "$GREP" "Hello from simple.cpp")"
 }
 
 function testCpp11 {
@@ -115,7 +116,9 @@ function testCpp20 {
 #include <iostream>
 #include <numbers>
 int main() {
-    std::cout << std::pi << \"$OUT\" << std::endl;
+    if( std::numbers::pi > 3.f ) {
+        std::cout << std::numbers::pi << \"$OUT\" << std::endl;
+    }
     return 0;
 }
 "
