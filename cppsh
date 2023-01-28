@@ -32,6 +32,15 @@ BIN="$TEMP_DIR/${BASE%.cpp}.exe"
 HELPER="$TEMP_DIR/compile.bat"
 BUILD_LOG="$TEMP_DIR/build.log"
 
+function log_info {
+    local NOW
+    NOW="$(date +'%F %T')"
+    local PREFIX
+    PREFIX=$(printf "$NOW L%3s %20s : " "${BASH_LINENO[1]}" "${FUNCNAME[1]}")
+
+    echo -e "$PREFIX$*" >> "$TEMP_DIR/cppsh.log"
+}
+
 function createHelper {
     local VERSIONS=("2022" "2019" "2017")
     local EDITIONS=("BuildTools" "Community" "Professional" "Enterprise")
@@ -55,15 +64,19 @@ function createHelper {
     
     # VS 2017/2019/2022 Professional/BuildTools/Community
     if [ -n "$VSNEWCOMNTOOLS" ]; then
+        log_info "Found $VSNEWCOMNTOOLS"
         echo -ne "call \"$VSNEWCOMNTOOLS\\\\vcvars64.bat\"" >> "$HELPER"
     # VS 2015
     elif [ -n "$VS140COMNTOOLS" ]; then
+        log_info "Found $VS140COMNTOOLS"
         echo -ne 'call "%VS140COMNTOOLS%..\\..\\VC\\bin\\amd64\\vcvars64.bat"' >> "$HELPER"
     # VS 2013
     elif [ -n "$VS120COMNTOOLS" ]; then
+        log_info "Found $VS120COMNTOOLS"
         echo -ne 'call "%VS120COMNTOOLS%..\\..\\VC\\bin\\amd64\\vcvars64.bat"' >> "$HELPER"
     # VS 2012
     elif [ -n "$VS110COMNTOOLS" ]; then
+        log_info "Found $VS110COMNTOOLS"
         echo -ne 'call "%VS110COMNTOOLS%..\\..\\VC\\bin\\amd64\\vcvars64.bat"' >> "$HELPER"
     fi
     
