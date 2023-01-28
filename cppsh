@@ -175,7 +175,7 @@ function doCompile {
                 g++ -I. $CPPFLAGS -std=c++2a $CXXFLAGS "$TEMP_CPP" -o "$BIN" $LDFLAGS -pthread $LIBS -lstdc++fs &> "$BUILD_LOG"
                 ;;
             Darwin)
-                [[ -n "$VERBOSE" ]] && echo "clang++ -I. $CPPFLAGS -std=c++2a -stdlib=libc++ $CXXFLAGS \"$TEMP_CPP\" -o \"$BIN\" $LDFLAGS $LIBS"
+                [[ -n "$VERBOSE" ]] && echo "clang++ -I. $CPPFLAGS -std=c++2a -stdlib=libc++ $CXXFLAGS \"$TEMP_CPP\" -o \"$BIN\" $LDFLAGS $LIBS -lpthread"
                 # shellcheck disable=SC2086
                 clang++ -I. $CPPFLAGS -std=c++2a -stdlib=libc++ $CXXFLAGS "$TEMP_CPP" -o "$BIN" $LDFLAGS $LIBS -lpthread &> "$BUILD_LOG"
                 ;;
