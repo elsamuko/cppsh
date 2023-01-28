@@ -74,7 +74,7 @@ function pleaseRemove {
 }
 
 function doPrepare {
-    mkdir -p $TEMP_DIR
+    mkdir -p "$TEMP_DIR"
     pleaseRemove "$TEMP_CPP"
     pleaseRemove "$HELPER"
     pleaseRemove "$BUILD_LOG"
