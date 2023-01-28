@@ -33,14 +33,19 @@ HELPER="$TEMP_DIR/compile.bat"
 BUILD_LOG="$TEMP_DIR/build.log"
 
 function createHelper {
-    local VERSIONS=("2019" "2017")
+    local VERSIONS=("2022" "2019" "2017")
     local EDITIONS=("BuildTools" "Community" "Professional" "Enterprise")
 
     for VERSION in "${VERSIONS[@]}"; do
         for EDITION in "${EDITIONS[@]}"; do
-            local VCVARS_DIR="C:/Program Files (x86)/Microsoft Visual Studio/$VERSION/$EDITION/VC/Auxiliary/Build"
-            if [ -d "$VCVARS_DIR" ]; then
-                export VSNEWCOMNTOOLS="${VCVARS_DIR////\\}"
+            local VCVARS_DIR_64="C:/Program Files/Microsoft Visual Studio/$VERSION/$EDITION/VC/Auxiliary/Build"
+            if [ -d "$VCVARS_DIR_64" ]; then
+                export VSNEWCOMNTOOLS="${VCVARS_DIR_64////\\}"
+                break 2
+            fi
+            local VCVARS_DIR_32="C:/Program Files (x86)/Microsoft Visual Studio/$VERSION/$EDITION/VC/Auxiliary/Build"
+            if [ -d "$VCVARS_DIR_32" ]; then
+                export VSNEWCOMNTOOLS="${VCVARS_DIR_32////\\}"
                 break 2
             fi
         done
@@ -48,7 +53,7 @@ function createHelper {
 
     echo -e '@echo off\r\n' > "$HELPER"
     
-    # VS 2017/2019 Professional/BuildTools/Community
+    # VS 2017/2019/2022 Professional/BuildTools/Community
     if [ -n "$VSNEWCOMNTOOLS" ]; then
         echo -ne "call \"$VSNEWCOMNTOOLS\\\\vcvars64.bat\"" >> "$HELPER"
     # VS 2015
