@@ -30,7 +30,7 @@ DIR=$(dirname "$ORIG")
 TEMP_CPP="$TEMP_DIR/$BASE"
 BIN="$TEMP_DIR/${BASE%.cpp}.exe"
 HELPER="$TEMP_DIR/compile.bat"
-LOG="$TEMP_DIR/error.log"
+BUILD_LOG="$TEMP_DIR/build.log"
 
 function createHelper {
     local VERSIONS=("2019" "2017")
@@ -77,7 +77,7 @@ function doPrepare {
     mkdir -p $TEMP_DIR
     pleaseRemove "$TEMP_CPP"
     pleaseRemove "$HELPER"
-    pleaseRemove "$LOG"
+    pleaseRemove "$BUILD_LOG"
 }
 
 function maybeCreate {
@@ -154,12 +154,12 @@ function doCompile {
             Linux)
                 [[ -n "$VERBOSE" ]] && echo "g++ -I. $CPPFLAGS -std=c++2a $CXXFLAGS \"$TEMP_CPP\" -o \"$BIN\" $LDFLAGS -pthread $LIBS -lstdc++fs"
                 # shellcheck disable=SC2086
-                g++ -I. $CPPFLAGS -std=c++2a $CXXFLAGS "$TEMP_CPP" -o "$BIN" $LDFLAGS -pthread $LIBS -lstdc++fs &> "$LOG"
+                g++ -I. $CPPFLAGS -std=c++2a $CXXFLAGS "$TEMP_CPP" -o "$BIN" $LDFLAGS -pthread $LIBS -lstdc++fs &> "$BUILD_LOG"
                 ;;
             Darwin)
                 [[ -n "$VERBOSE" ]] && echo "clang++ -I. $CPPFLAGS -std=c++2a -stdlib=libc++ $CXXFLAGS \"$TEMP_CPP\" -o \"$BIN\" $LDFLAGS $LIBS"
                 # shellcheck disable=SC2086
-                clang++ -I. $CPPFLAGS -std=c++2a -stdlib=libc++ $CXXFLAGS "$TEMP_CPP" -o "$BIN" $LDFLAGS $LIBS -lpthread &> "$LOG"
+                clang++ -I. $CPPFLAGS -std=c++2a -stdlib=libc++ $CXXFLAGS "$TEMP_CPP" -o "$BIN" $LDFLAGS $LIBS -lpthread &> "$BUILD_LOG"
                 ;;
             CYGWIN*)
                 WTEMP_DIR=$(cygpath -w "$TEMP_DIR")
@@ -168,7 +168,7 @@ function doCompile {
                 createHelper
                 [[ -n "$VERBOSE" ]] && echo "cl /EHsc /std:c++latest /nologo /D_UNICODE /DUNICODE /I. $CPPFLAGS $CXXFLAGS \"$WTEMP_CPP\" /Fo\"$WTEMP_DIR\\\" /Fe\"$WBIN\" /link $LDFLAGS $LIBS"
                 # shellcheck disable=SC2086
-                "$HELPER" /I. $CPPFLAGS $CXXFLAGS "$WTEMP_CPP" /Fo"$WTEMP_DIR\\" /Fe"$WBIN" /link $LDFLAGS $LIBS &> "$LOG"
+                "$HELPER" /I. $CPPFLAGS $CXXFLAGS "$WTEMP_CPP" /Fo"$WTEMP_DIR\\" /Fe"$WBIN" /link $LDFLAGS $LIBS &> "$BUILD_LOG"
                 ;;
             MINGW*|MSYS*)
                 WTEMP_DIR=$(cygpath -w "$TEMP_DIR")
@@ -177,7 +177,7 @@ function doCompile {
                 createHelper
                 [[ -n "$VERBOSE" ]] && echo "cl /EHsc /std:c++latest /nologo /D_UNICODE /DUNICODE /I. $CPPFLAGS $CXXFLAGS \"$WTEMP_CPP\" /Fo\"$WTEMP_DIR\\\" /Fe\"$WBIN\" /link $LDFLAGS $LIBS"
                 # shellcheck disable=SC2086
-                "$HELPER" //I. $CPPFLAGS $CXXFLAGS "$WTEMP_CPP" //Fo"$WTEMP_DIR\\" //Fe"$WBIN" //link $LDFLAGS $LIBS &> "$LOG"
+                "$HELPER" //I. $CPPFLAGS $CXXFLAGS "$WTEMP_CPP" //Fo"$WTEMP_DIR\\" //Fe"$WBIN" //link $LDFLAGS $LIBS &> "$BUILD_LOG"
                 ;;
             *)
                 echo "Error: Unknown OS."
@@ -191,7 +191,7 @@ function doExecute {
         shift # removes first argument
         exec -a "$ORIG" "$BIN" "$@"
     else
-        cat "$LOG"
+        cat "$BUILD_LOG"
     fi
 }
 
